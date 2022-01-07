@@ -57,8 +57,8 @@ def add_students():
             if id == "" or name == "" or class_ == "" or subject == "":
                 return render_template("students.html", message='Please enter required fields.')
 
-            if len(id) < 12 or len(id) > 12:
-                return render_template("students.html", message='The id must contain 12 numbers.')
+            # if len(id) < 12 or len(id) > 12:
+            #     return render_template("students.html", message='The id must contain 12 numbers.')
 
             if id.isdigit() is False:
                 return render_template("students.html", message='Only enter number!')
