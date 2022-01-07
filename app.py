@@ -2,14 +2,14 @@ from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 
-load_dotenv()
+# load_dotenv()
 
 app = Flask(__name__)
 
-db = SQLAlchemy(app)
+# db = SQLAlchemy(app)
 
 
 @app.route('/')
@@ -23,6 +23,6 @@ def students():
 
 
 if __name__ == '__main__':
-    # app.debug = True
+    app.debug = True
     app.run()
 
