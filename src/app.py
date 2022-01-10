@@ -9,8 +9,8 @@ from src.models import Students
 
 
 # load_dotenv()
-#
-# app = Flask(__name__)
+
+app = Flask(__name__)
 
 # ENV = 'dev'
 ENV = 'prod'
