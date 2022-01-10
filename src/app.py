@@ -5,7 +5,7 @@ import traceback
 
 from src.models import Students
 
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
 
 # load_dotenv()
