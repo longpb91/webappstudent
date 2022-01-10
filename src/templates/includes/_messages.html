@@ -1,0 +1,23 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for category, message in messages %}
+      <li class="{{ category }}">{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+{% if error %}
+    <div class="alert alert-danger">
+        <img src="../static/triangle.png" width="auto" height="20">
+        {{error}}
+    </div>
+{% endif %}
+
+{% if msg %}
+    <div class="alert alert-success">
+        <img src="../static/check.png" width="auto" height="20">
+        {{msg}}
+    </div>
+{% endif %}
