@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div class="container" style="margin-top:10px">
+    {% if message %}
+    <p class="message">{{message | safe}}</p>
+    {% endif %}
+    <form action="/teachers" method="POST">
+    <h2>Nhập thông tin giáo viên</h2><br><br>
+
+      <div class="form-group">
+        <label for="teacher">Tên giáo viên:</label><br>
+        <input
+          type="text"
+          name="teacher"
+          id="teacher"
+          placeholder="Tên giáo viên"
+        />
+        <br><br>
+      </div>
+      <input type="submit" class="btn btn-primary" value="Submit">
+    </form>
+  </div>
+  </body>
+
+{% endblock %}

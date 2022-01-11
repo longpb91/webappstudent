@@ -7,22 +7,22 @@
     {% endif %}
     <h2>Nhập thông tin học sinh</h2><br><br>
     <form action="/students" method="POST">
-      <div class="form-group">
-        <label for="sid">Mã học sinh (Student ID):</label><br>
-        <input
-          type="text"
-          name="studentid"
-          id="sid"
-          placeholder="Mã học sinh"
-          maxlength="5"
-        />
-        <br><br>
-      </div>
+<!--      <div class="form-group">-->
+<!--        <label for="sid">Mã học sinh (Student ID):</label><br>-->
+<!--        <input-->
+<!--          type="text"-->
+<!--          name="studentid"-->
+<!--          id="sid"-->
+<!--          placeholder="Mã học sinh"-->
+<!--          maxlength="5"-->
+<!--        />-->
+<!--        <br><br>-->
+<!--      </div>-->
       <div class="form-group">
         <label for="sname">Tên học sinh:</label><br>
         <input
           type="text"
-          name="name"
+          name="studentname"
           id="sname"
           placeholder="Full name of student"
         />
@@ -30,29 +30,33 @@
       </div>
 
       <div class="form-group">
+
         <label for="classes">Chọn lớp:</label><br>
         <select name="classes" id="classes">
-          <option value="fresher_de">Fresher DE</option>
-          <option value="fresher_ds">Fresher DS</option>
-          <option value="fresher_da">Fresher DA</option>
+            {% for class in lst %}
+            <option value={{ class }}>{{ class }}</option>
+            {% endfor %}
+<!--          <option value="fresher_de">Fresher DE</option>-->
+<!--          <option value="fresher_ds">Fresher DS</option>-->
+<!--          <option value="fresher_da">Fresher DA</option>-->
         </select>
         <br><br>
       </div>
-      <div class="form-group">
-        <label>Chọn môn học:</label><br>
-        <input type="checkbox" id="bdata" name="subject" value="BigData"> Big Data
-  <!--      <label for="bdata">Big Data</label>-->
-        <br>
-        <input type="checkbox" id="hdoop" name="subject" value="Hadoop"> Hadoop
-  <!--      <label for="hdoop">Apache Hadoop</label>-->
-        <br>
-        <input type="checkbox" id="pthon" name="subject" value="Python"> Fundemental Python
-  <!--      <label for="pthon">Fundamental Python</label>-->
-        <br>
-        <input type="checkbox" id="sql" name="subject" value="SQL"> SQL
-  <!--      <label for="sql">SQL</label>-->
-        <br><br>
-      </div>
+<!--      <div class="form-group">-->
+<!--        <label>Chọn môn học:</label><br>-->
+<!--        <input type="checkbox" id="bdata" name="subject" value="BigData"> Big Data-->
+<!--  &lt;!&ndash;      <label for="bdata">Big Data</label>&ndash;&gt;-->
+<!--        <br>-->
+<!--        <input type="checkbox" id="hdoop" name="subject" value="Hadoop"> Hadoop-->
+<!--  &lt;!&ndash;      <label for="hdoop">Apache Hadoop</label>&ndash;&gt;-->
+<!--        <br>-->
+<!--        <input type="checkbox" id="pthon" name="subject" value="Python"> Fundemental Python-->
+<!--  &lt;!&ndash;      <label for="pthon">Fundamental Python</label>&ndash;&gt;-->
+<!--        <br>-->
+<!--        <input type="checkbox" id="sql" name="subject" value="SQL"> SQL-->
+<!--  &lt;!&ndash;      <label for="sql">SQL</label>&ndash;&gt;-->
+<!--        <br><br>-->
+<!--      </div>-->
       <input type="submit" class="btn btn-primary" value="Submit">
     </form>
   </div>
