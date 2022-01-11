@@ -5,15 +5,15 @@ import traceback
 
 from src.models import Students, Classes, Teachers, Subjects
 
-from dotenv import load_dotenv
-
-
-load_dotenv()
+# from dotenv import load_dotenv
+#
+#
+# load_dotenv()
 
 app = Flask(__name__)
 
-ENV = 'dev'
-# ENV = 'prod'
+# ENV = 'dev'
+ENV = 'prod'
 
 if ENV == 'dev':
     app.debug = True
