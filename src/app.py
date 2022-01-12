@@ -23,6 +23,7 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL_PROD')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+
 db = SQLAlchemy(app)
 
 
@@ -88,18 +89,23 @@ def add_students():
 
                 # return "Student with ID={}".format(data_students.id)
                 # return render_template("success.html")
-                msg = 'Successfully! Thank you for your information.'
+                msg = 'Success! Thank you for your information.'
                 return render_template('students.html', lst=lst, msg=msg)
             elif request.form['service'] == 'search':
                 name = request.form['studentnameget']
                 query_2 = f"SELECT * FROM add_students WHERE studentname = '{name}'"
-                result = db.session.execute(query_2)
-
-
-
-
-                return render_template('students.html', lst=lst)
-
+                results = db.session.execute(query_2)
+                lst = []
+                for r in results:
+                    lst.append(r)
+                if len(lst) == 1:
+                    headings = ('StudentID', 'StudentName', 'Gender', 'Class')
+                    data = tuple(lst)
+                    msg = 'Success!'
+                    return render_template('students.html', lst=lst, headings=headings, data=data, msg=msg)
+                else:
+                    error = 'Student not found! Please try again!'
+                    return render_template('students.html', lst=lst, error=error)
         return render_template("students.html", lst=lst)
     except Exception as e:
         return str(e)

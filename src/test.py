@@ -1,8 +1,8 @@
-from src.app import db
+from src.app import db, app
 from src.models import Students, Classes
 import psycopg2
 
-
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # class_id = "cbide03".upper()
 # # class_id.upper()
 # compare = db.session.query(Classes).filter(Classes.classid == class_id)
@@ -17,13 +17,21 @@ import psycopg2
 #     # print(r[0])
 #     lst.append(r[0])
 # print(lst)
-name = r"'Phạm Bảo Long'"
+name = "'Phạm Bảo Long'"
 querry = f"SELECT * FROM add_students WHERE studentname={name}"
 result = db.session.execute(querry)
-print(result)
+# print(result)
 lst = []
 for r in result:
     # print(r)
     # lst.append(r[1])
     lst.append(r)
-print(lst)
+    # StudentID = r[0]
+    # FullName = r[1]
+    # Gender = r[2]
+    # Class_ = r[3]
+# print(lst)
+# print(lst[0][0])
+# print(StudentID, FullName, Gender, Class_)
+x = tuple(lst)
+print(x)

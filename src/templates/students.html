@@ -46,25 +46,27 @@
                   <input type="hidden" name="service" value="add">
               </form>
           </div>
+
           <div class="colsm-8" style="margin-left:50px">
               <h3>Tra cứu thông tin học sinh</h3><br><br>
-              <table class="table table-striped">
-                  <tr>
-                      <th>StudentID</th>
-                      <th>FullName</th>
-                      <th>Gender</th>
-                      <th>Class</th>
-                      <th></th>
-                      <th></th>
-                  </tr>
-                  {% for student in students %}
-                    <tr>
-                        <td></td>
-                    </tr>
-                  {% endfor %}
-              </table>
+
+
               <form action="/students" method="POST">
                   <div class="form-group">
+                      <table class="table table-striped">
+                      <tr>
+                          {% for header in headings %}
+                            <th>{{ header }}</th>
+                          {% endfor %}
+                      </tr>
+                      {% for row in data %}
+                        <tr>
+                            {% for cell in row %}
+                                <td>{{ cell }}</td>
+                            {% endfor %}
+                        </tr>
+                          {% endfor %}
+                    </table>
                       <label for="snameget">Tên học sinh:</label><br>
                       <input
                           type="text"
@@ -84,8 +86,6 @@
               </form>
           </div>
       </div>
-
-
 
   </div>
   </body>
