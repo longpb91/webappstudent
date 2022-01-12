@@ -5,15 +5,15 @@ import traceback
 
 from src.models import Students, Classes, Teachers, Subjects
 
-# from dotenv import load_dotenv
-#
-#
-# load_dotenv()
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 app = Flask(__name__)
 
-# ENV = 'dev'
-ENV = 'prod'
+ENV = 'dev'
+# ENV = 'prod'
 
 if ENV == 'dev':
     app.debug = True
@@ -66,28 +66,40 @@ def add_classes():
 @app.route('/students', methods=['GET', 'POST'])
 def add_students():
     try:
-        query = 'SELECT classname FROM add_classes'
-        results = db.session.execute(query)
+        query_1 = 'SELECT classname FROM add_classes'
+        results = db.session.execute(query_1)
         lst = []
         for r in results:
             lst.append(r[0])
 
         if request.method == 'POST':
-            name = request.form['studentname']
-            class_ = request.form['classes']
+            if request.form['service'] == 'add':
+                name = request.form['studentname']
+                gender = request.form['studentgender']
+                class_ = request.form['classes']
 
-            if name == "" or class_ == "":
-                error = "Please enter required fields."
-                return render_template("students.html", lst=lst, error=error)
+                if name == "" or class_ == "" or gender == "":
+                    error = "Please enter required fields."
+                    return render_template("students.html", lst=lst, error=error)
 
-            data_students = Students(name, class_)
-            db.session.add(data_students)
-            db.session.commit()
+                data_students = Students(name, gender, class_)
+                db.session.add(data_students)
+                db.session.commit()
 
-            # return "Student with ID={}".format(data_students.id)
-            # return render_template("success.html")
-            msg = 'Successfully! Thank you for your information.'
-            return render_template('students.html', lst=lst, msg=msg)
+                # return "Student with ID={}".format(data_students.id)
+                # return render_template("success.html")
+                msg = 'Successfully! Thank you for your information.'
+                return render_template('students.html', lst=lst, msg=msg)
+            elif request.form['service'] == 'search':
+                name = request.form['studentnameget']
+                query_2 = f"SELECT * FROM add_students WHERE studentname = '{name}'"
+                result = db.session.execute(query_2)
+
+
+
+
+                return render_template('students.html', lst=lst)
+
         return render_template("students.html", lst=lst)
     except Exception as e:
         return str(e)
@@ -141,7 +153,6 @@ def add_subjects():
         return render_template('subject_add.html')
     except Exception as e:
         return str(e)
-
 
 
 if __name__ == '__main__':

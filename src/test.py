@@ -10,10 +10,20 @@ import psycopg2
 
 # x = Classes.query.filter_by(classname='Fresher_DE_01').first()
 # print(x)
-result = db.session.execute("SELECT classname FROM add_classes")
+# result = db.session.execute("SELECT classname FROM add_classes")
+# print(result)
+# lst = []
+# for r in result:
+#     # print(r[0])
+#     lst.append(r[0])
+# print(lst)
+name = r"'Phạm Bảo Long'"
+querry = f"SELECT * FROM add_students WHERE studentname={name}"
+result = db.session.execute(querry)
 print(result)
 lst = []
 for r in result:
-    # print(r[0])
-    lst.append(r[0])
+    # print(r)
+    # lst.append(r[1])
+    lst.append(r)
 print(lst)
