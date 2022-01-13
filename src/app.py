@@ -23,6 +23,7 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL_PROD')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+
 db = SQLAlchemy(app)
 
 
@@ -63,35 +64,114 @@ def add_classes():
         # return traceback.print_exc()
 
 
+def get_data_query(query):
+    results = db.session.execute(query)
+    lst = []
+    for r in results:
+        lst.append(r)
+    return lst
+
+
 @app.route('/students', methods=['GET', 'POST'])
 def add_students():
     try:
-        query = 'SELECT classname FROM add_classes'
-        results = db.session.execute(query)
+        query_1 = 'SELECT classname FROM add_classes'
+        results = db.session.execute(query_1)
         lst = []
         for r in results:
             lst.append(r[0])
 
         if request.method == 'POST':
-            name = request.form['studentname']
-            class_ = request.form['classes']
+            if request.form['service'] == 'add':
+                name = request.form['studentname']
+                gender = request.form['studentgender']
+                class_ = request.form['classes']
+                if name == "" or class_ == "" or gender == "":
+                    error = "Please enter required fields."
+                    return render_template("students.html", lst=lst, error=error)
 
-            if name == "" or class_ == "":
-                error = "Please enter required fields."
-                return render_template("students.html", lst=lst, error=error)
+                data_students = Students(name, gender, class_)
+                db.session.add(data_students)
+                db.session.commit()
 
-            data_students = Students(name, class_)
-            db.session.add(data_students)
-            db.session.commit()
+                query_5 = f"SELECT * FROM add_students"
+                data = tuple(get_data_query(query_5))
 
-            # return "Student with ID={}".format(data_students.id)
-            # return render_template("success.html")
-            msg = 'Successfully! Thank you for your information.'
-            return render_template('students.html', lst=lst, msg=msg)
+                msg = 'Success! Thank you for your information.'
+                return render_template('students.html', lst=lst, msg=msg, data_all=data)
+
+            elif request.form['service'] == 'search':
+                name = request.form['getstudentname']
+
+                query_2 = f"SELECT * FROM add_students WHERE studentname = '{name}'"
+                lst_data = get_data_query(query_2)
+
+                if len(lst_data) >= 1:
+                    headings = ('StudentID', 'StudentName', 'Gender', 'Class')
+                    data = tuple(lst_data)
+                    msg = 'Success!'
+                    return render_template('students.html', lst=lst, headings=headings, data=data, msg=msg)
+                else:
+                    error = 'Student not found! Please try again!'
+                    return render_template('students.html', lst=lst, error=error,)
+
+            elif request.form['service'] == 'delete':
+                id = request.form['delete_id']
+                query_3 = f"DELETE FROM add_students WHERE studentid='{id}'"
+                db.session.execute(query_3)
+                db.session.commit()
+                msg = f"Delete Student with id = {id} successfully!"
+                return render_template('students.html', lst=lst, msg=msg)
+
+            elif request.form['service'] == 'show':
+                query_4 = f"SELECT * FROM add_students"
+                lst_data = get_data_query(query_4)
+
+                if len(lst_data) > 0:
+                    data = tuple(lst_data)
+                    msg = 'Success!'
+                    return render_template('students.html', lst=lst, data_all=data, msg=msg)
+                else:
+                    error = 'Student not found! Please try again!'
+                    return render_template('students.html', lst=lst, error=error)
+
         return render_template("students.html", lst=lst)
     except Exception as e:
         return str(e)
         # return traceback.print_exc()
+
+
+@app.route('/edit_students', methods=['GET', 'POST'])
+def edit_students():
+    id_ = request.form['editid']
+    query_student = f"SELECT * FROM add_students WHERE studentid={id_}"
+    lst_student = get_data_query(query_student)
+
+    query_class = 'SELECT classname FROM add_classes'
+    lst_class = get_data_query(query_class)
+
+    return render_template('edit_students.html', lst=lst_class, lst_student=lst_student[0])
+
+
+
+    # if request.method == 'POST':
+    #     if request.form['service'] == 'add':
+    #         name = request.form['studentname']
+    #         gender = request.form['studentgender']
+    #         class_ = request.form['classes']
+    #         if name == "" or class_ == "" or gender == "":
+    #             error = "Please enter required fields."
+    #             return render_template("edit_student.html", lst=lst, error=error)
+    #
+    #         data_students = Students(name, gender, class_)
+    #         db.session.add(data_students)
+    #         db.session.commit()
+    #
+    #         query_5 = f"SELECT * FROM add_students"
+    #         data = tuple(get_data_query(query_5))
+    #
+    #         msg = 'Success! Thank you for your information.'
+    #         return render_template('students.html', lst=lst, msg=msg, data_all=data)
 
 
 @app.route('/students-info')
@@ -141,7 +221,6 @@ def add_subjects():
         return render_template('subject_add.html')
     except Exception as e:
         return str(e)
-
 
 
 if __name__ == '__main__':

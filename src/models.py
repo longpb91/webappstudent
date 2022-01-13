@@ -10,10 +10,12 @@ class Students(db.Model):
     __tablename__ = 'add_students'
     studentid = db.Column(db.Integer, primary_key=True)
     studentname = db.Column(db.String(200))
+    studentgender = db.Column(db.String(10))
     class_ = db.Column(db.String(200))
 
-    def __init__(self, studentname, class_):
+    def __init__(self, studentname, studentgender, class_):
         self.studentname = studentname
+        self.studentgender = studentgender
         self.class_ = class_
 
 
