@@ -12,6 +12,7 @@ from src.models import Students, Classes, Teachers, Subjects
 
 app = Flask(__name__)
 
+
 # ENV = 'dev'
 ENV = 'prod'
 
@@ -22,6 +23,8 @@ else:
     app.debug = True
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL_PROD')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['SESSION_TYPE'] = 'filesystem'
 
 
 db = SQLAlchemy(app)
@@ -143,35 +146,35 @@ def add_students():
 
 @app.route('/edit_students', methods=['GET', 'POST'])
 def edit_students():
-    id_ = request.form['editid']
-    query_student = f"SELECT * FROM add_students WHERE studentid={id_}"
-    lst_student = get_data_query(query_student)
+    try:
+        if request.method == 'POST':
+            id_ = request.form['editid']
+            if request.form['service'] == 'editsuccess':
+                name = request.form['studentname']
+                gender = request.form['studentgender']
+                class_ = request.form['classes']
 
-    query_class = 'SELECT classname FROM add_classes'
-    lst_class = get_data_query(query_class)
+                if name == "" or class_ == "" or gender == "":
+                    error = "Please enter required fields."
+                    return render_template("edit_student.html", lst=lst_class, error=error)
 
-    return render_template('edit_students.html', lst=lst_class, lst_student=lst_student[0])
+                query_update = f"UPDATE add_students " \
+                                f"SET studentname='{name}', studentgender='{gender}', class_='{class_}' " \
+                                f"WHERE studentid = {id_}"
 
+                db.session.execute(query_update)
+                db.session.commit()
 
-
-    # if request.method == 'POST':
-    #     if request.form['service'] == 'add':
-    #         name = request.form['studentname']
-    #         gender = request.form['studentgender']
-    #         class_ = request.form['classes']
-    #         if name == "" or class_ == "" or gender == "":
-    #             error = "Please enter required fields."
-    #             return render_template("edit_student.html", lst=lst, error=error)
-    #
-    #         data_students = Students(name, gender, class_)
-    #         db.session.add(data_students)
-    #         db.session.commit()
-    #
-    #         query_5 = f"SELECT * FROM add_students"
-    #         data = tuple(get_data_query(query_5))
-    #
-    #         msg = 'Success! Thank you for your information.'
-    #         return render_template('students.html', lst=lst, msg=msg, data_all=data)
+                flash('Updated', 'success')
+                return redirect(url_for('add_students'))
+            elif request.form['service'] == 'editstudent':
+                query_student = f"SELECT * FROM add_students WHERE studentid={id_}"
+                lst_student = get_data_query(query_student)
+                query_class = 'SELECT classname FROM add_classes'
+                lst_class = get_data_query(query_class)
+                return render_template('edit_students.html', lst=lst_class, lst_student=lst_student[0])
+    except Exception as e:
+        return str(e)
 
 
 @app.route('/students-info')
@@ -225,5 +228,6 @@ def add_subjects():
 
 if __name__ == '__main__':
     # app.debug = True
+    # app.secret_key = os.environ.get('SECRET_KEY')
     app.run()
 
