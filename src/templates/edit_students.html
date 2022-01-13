@@ -5,7 +5,7 @@
 <div class="row">
           <div class="col-sm-12" style="background-color:gainsboro;">
               <h3>Nhập thông tin học sinh</h3><br><br>
-              <form action="/edit_student" method="POST">
+              <form action="/edit_students" method="POST">
                   <div class="form-group">
                       <label for="sname">Tên học sinh:</label><br>
                       <input
@@ -41,16 +41,18 @@
                           <option value=" " selected>Chọn...</option>
                           {% for class in lst %}
                               {% if lst_student[3] == class[0] %}
-                                <option value={{ class[0] }} selected>{{ class[0] }}</option>
+                                <option value="{{ class[0] }}" selected>{{ class[0] }}</option>
                               {% else %}
-                                <option value={{ class[0] }}>{{ class[0] }}</option>
+                                <option value="{{ class[0] }}">{{ class[0] }}</option>
                               {% endif %}
                           {% endfor %}
                       </select>
                       <br><br>
                   </div>
                   <input type="submit" name="submit_button" class="btn btn-primary" value=" Nộp ">
-                  <input type="hidden" name="service" value="add">
+                  <input type="hidden" name="service" value="editsuccess">
+                  <input type="hidden" name="editid" value="{{ lst_student[0] }}">
+
               </form>
           </div>
 {% endblock %}
