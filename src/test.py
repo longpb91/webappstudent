@@ -34,4 +34,4 @@ for r in result:
 # print(lst[0][0])
 # print(StudentID, FullName, Gender, Class_)
 x = tuple(lst)
-print(x)
+print(x[0][0])
