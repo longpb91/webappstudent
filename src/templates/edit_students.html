@@ -38,8 +38,8 @@
                   <div class="form-group">
                       <label for="classes">Chọn lớp:</label><br>
                       <select name="classes" class="form-control" id="classes">
-                          <option value=" " selected>Chọn...</option>
-                          {% for class in lst %}
+<!--                          <option value=" " selected>Chọn...</option>-->
+                          {% for class in lst_class %}
                               {% if lst_student[3] == class[0] %}
                                 <option value="{{ class[0] }}" selected>{{ class[0] }}</option>
                               {% else %}
