@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
-import traceback
+# import traceback
 
 from src.models import Students, Classes, Teachers, Subjects
 
@@ -120,11 +120,11 @@ def add_students():
                     return render_template('students.html', lst=lst, error=error,)
 
             elif request.form['service'] == 'delete':
-                id = request.form['delete_id']
-                query_3 = f"DELETE FROM add_students WHERE studentid='{id}'"
+                id_ = request.form['delete_id']
+                query_3 = f"DELETE FROM add_students WHERE studentid='{id_}'"
                 db.session.execute(query_3)
                 db.session.commit()
-                msg = f"Delete Student with id = {id} successfully!"
+                msg = f"Delete Student with id = {id_} successfully!"
                 return render_template('students.html', lst=lst, msg=msg)
 
             elif request.form['service'] == 'show':
@@ -155,27 +155,34 @@ def edit_students():
                 gender = request.form['studentgender']
                 class_ = request.form['classes']
 
-                if name == "" or class_ == "" or gender == "":
+                if name == "":
+                    query_student = f"SELECT * FROM add_students WHERE studentid={id_}"
+                    lst_student = get_data_query(query_student)
+                    query_class = 'SELECT classname FROM add_classes'
+                    lst_class = get_data_query(query_class)
                     error = "Please enter required fields."
-                    return render_template("edit_student.html", lst=lst_class, error=error)
+                    return render_template("edit_students.html", lst_student=lst_student[0],
+                                           lst_class=lst_class, error=error)
 
                 query_update = f"UPDATE add_students " \
-                                f"SET studentname='{name}', studentgender='{gender}', class_='{class_}' " \
-                                f"WHERE studentid = {id_}"
+                               f"SET studentname='{name}', studentgender='{gender}', class_='{class_}' " \
+                               f"WHERE studentid = {id_}"
 
                 db.session.execute(query_update)
                 db.session.commit()
 
                 flash('Updated', 'success')
                 return redirect(url_for('add_students'))
+                # return print(type(id_))
             elif request.form['service'] == 'editstudent':
                 query_student = f"SELECT * FROM add_students WHERE studentid={id_}"
                 lst_student = get_data_query(query_student)
                 query_class = 'SELECT classname FROM add_classes'
                 lst_class = get_data_query(query_class)
-                return render_template('edit_students.html', lst=lst_class, lst_student=lst_student[0])
+                return render_template('edit_students.html', lst_class=lst_class, lst_student=lst_student[0])
     except Exception as e:
         return str(e)
+        # return traceback.print_exc()
 
 
 @app.route('/students-info')
@@ -231,4 +238,3 @@ if __name__ == '__main__':
     # app.debug = True
     # app.secret_key = os.environ.get('SECRET_KEY')
     app.run()
-
