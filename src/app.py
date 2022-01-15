@@ -201,13 +201,14 @@ def add_teachers():
 
         if request.method == 'POST':
             teachername = request.form['teacher']
+            teachergender = request.form['teacher_gender']
             class_ = request.form.getlist('teacher_classes')
 
             if teachername == '':
                 error = "Please enter required fields."
                 return render_template("teacher_add.html", lst_classes=lst_classes, error=error)
 
-            data_teacher = Teachers(teachername)
+            data_teacher = Teachers(teachername, teachergender, class_)
             db.session.add(data_teacher)
             db.session.commit()
 
