@@ -17,21 +17,28 @@ import psycopg2
 #     # print(r[0])
 #     lst.append(r[0])
 # print(lst)
-name = "'Phạm Bảo Long'"
-querry = f"SELECT * FROM add_students WHERE studentname={name}"
-result = db.session.execute(querry)
+# name = "'Phạm Bảo Long'"
+# querry = f"SELECT * FROM add_students WHERE studentname={name}"
+# result = db.session.execute(querry)
 # print(result)
-lst = []
+# lst = []
+# for r in result:
+#     # print(r)
+#     # lst.append(r[1])
+#     lst.append(r)
+#     # StudentID = r[0]
+#     # FullName = r[1]
+#     # Gender = r[2]
+#     # Class_ = r[3]
+# # print(lst)
+# # print(lst[0][0])
+# # print(StudentID, FullName, Gender, Class_)
+# x = tuple(lst)
+# print(x[0][0])
+
+name = "'Nguyễn Minh Quang'"
+query = f"SELECT * FROM add_teachers WHERE teachername={name}"
+result = db.session.execute(query)
 for r in result:
-    # print(r)
-    # lst.append(r[1])
-    lst.append(r)
-    # StudentID = r[0]
-    # FullName = r[1]
-    # Gender = r[2]
-    # Class_ = r[3]
-# print(lst)
-# print(lst[0][0])
-# print(StudentID, FullName, Gender, Class_)
-x = tuple(lst)
-print(x[0][0])
+    print(r)
+# print(result)

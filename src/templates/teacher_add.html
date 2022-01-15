@@ -28,9 +28,88 @@
               {% endfor %}
             </select><br><br>
 
-            <input type="submit" class="btn btn-primary" value="Submit">
+            <input type="submit" class="btn btn-primary" value=" Nộp ">
+            <input type="hidden" name="service" value="add_teacher">
           </div>
         </form>
+      </div>
+
+      <div class="col-sm-7" style="margin-left:50px">
+        <h3>Tra cứu thông tin giáo viên</h3><br><br>
+        <div class="form-group">
+            <table class="table table-striped">
+                <tr>
+                    {% for header in headings %}
+                    <th>{{ header }}</th>
+                    {% endfor %}
+                    <th></th>
+                    <th></th>
+                </tr>
+
+                {% for row in data %}
+                <tr>
+                    {% for cell in row %}
+                    <td>{{ cell }}</td>
+                    {% endfor %}
+                    <td>
+                        <form action="/edit_teacher" method="POST">
+                            <input type="submit" class="btn btn-info" value=" Sửa ">
+                            <input type="hidden" name="edit_id" value="{{ row[0] }}">
+                            <input type="hidden" name="service" value="edit_teacher">
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/teachers" method="POST">
+                            <input type="submit" class="btn btn-danger" value=" Xóa ">
+                            <input type="hidden" name="service" value="delete_teacher">
+                            <input type="hidden" name="delete_tid" value="{{ row[0] }}">
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <form action="/teachers" method="POST">
+                <label for="get_teacher_name">Tên giáo viên:</label><br>
+                <input
+                        type="text"
+                        class="form-control"
+                        name="getteachername"
+                        id="get_teacher_name"
+                        placeholder="Tên đầy đủ"
+                >
+                <br><br>
+                <input type="hidden" name="service" value="search_teacher">
+                <input type="submit" class="btn btn-primary" value=" Tra cứu ">
+                <br>
+            </form>
+        </div>
+      </div>
+
+      <div class="col-sm-12" style="margin-top:15px">
+          <h3> Danh sách giáo viên</h3>
+          <div class="form-group">
+              <table class="table table-striped">
+                  <tr>
+                      <th>Teacher ID</th>
+                      <th>Full Name</th>
+                      <th>Gender</th>
+                      <th>Class in charge</th>
+                  </tr>
+
+                  {% for row in data_all %}
+                  <tr>
+                      {% for cell in row %}
+                      <td>{{ cell }}</td>
+                      {% endfor %}
+                  </tr>
+                  {% endfor %}
+              </table>
+              <form action="/teachers" method="POST">
+                  <input type="hidden" name="service" value="show_teachers">
+                  <input type="submit" class="btn btn-primary" value="Hiện danh sách giáo viên">
+              </form>
+          </div>
       </div>
     </div>
   </div>
