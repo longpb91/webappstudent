@@ -33,9 +33,13 @@ class Teachers(db.Model):
     __tablename__ = 'add_teachers'
     teacherid = db.Column(db.Integer, primary_key=True)
     teachername = db.Column(db.String(200))
+    teachergender = db.Column(db.String(10))
+    teacherclasses = db.Column(db.String(1000))
 
-    def __init__(self, teachername):
+    def __init__(self, teachername, teachergender, teacherclasses):
         self.teachername = teachername
+        self.teachergender = teachergender
+        self.teacherclasses = teacherclasses
 
 
 class Subjects(db.Model):

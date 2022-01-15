@@ -1,26 +1,39 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+<body>
   <div class="container" style="margin-top:10px">
     {% if message %}
     <p class="message">{{message | safe}}</p>
     {% endif %}
-    <form action="/teachers" method="POST">
-    <h2>Nhập thông tin giáo viên</h2><br><br>
+    <div class="row">
+      <div class="col-sm-4" style="background-color:gainsboro;">
+        <h3>Nhập thông tin giáo viên</h3><br><br>
+        <form action="/teachers" method="POST">
+          <div class="form-group">
+            {% include 'includes/_selectpicker.html' %}
+            <label for="teacher">Tên giáo viên:</label><br>
+            <input type="text" class="form-control" name="teacher" id="teacher", placeholder="Tên giáo viên"><br>
+            <label for="tgender">Giới tính:</label>
+            <select name="teacher_gender" id="tgender" class="form-control">
+              <option value=" " selected>Chọn...</option>
+              <option value="Nam">Nam</option>
+              <option value="Nữ">Nữ</option>
+              <option value="Khác">Khác</option>
+            </select><br>
+            <label>Lớp:</label><br>
+            <select name='teacher_classes' class="selectpicker form-control" multiple data-live-search="true">
+              {% for class in lst_classes %}
+              <option name="class_" value="{{ class }}">{{ class }}</option>
+              {% endfor %}
+            </select><br><br>
 
-      <div class="form-group">
-        <label for="teacher">Tên giáo viên:</label><br>
-        <input
-          type="text"
-          name="teacher"
-          id="teacher"
-          placeholder="Tên giáo viên"
-        />
-        <br><br>
+            <input type="submit" class="btn btn-primary" value="Submit">
+          </div>
+        </form>
       </div>
-      <input type="submit" class="btn btn-primary" value="Submit">
-    </form>
+    </div>
   </div>
-  </body>
+</body>
 
 {% endblock %}

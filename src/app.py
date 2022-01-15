@@ -193,20 +193,29 @@ def get_students():
 @app.route('/teachers', methods=['GET', 'POST'])
 def add_teachers():
     try:
+        query_1 = 'SELECT classname FROM add_classes'
+        results = db.session.execute(query_1)
+        lst_classes = []
+        for r in results:
+            lst_classes.append(r[0])
+
         if request.method == 'POST':
             teachername = request.form['teacher']
+            teachergender = request.form['teacher_gender']
+            class_ = request.form.getlist('teacher_classes')
 
             if teachername == '':
                 error = "Please enter required fields."
-                return render_template("teacher_add.html", error=error)
+                return render_template("teacher_add.html", lst_classes=lst_classes, error=error)
 
-            data_teacher = Teachers(teachername)
+            data_teacher = Teachers(teachername, teachergender, class_)
             db.session.add(data_teacher)
             db.session.commit()
 
             msg = 'Successfully! Thank you for your information.'
-            return render_template("teacher_add.html", msg=msg)
-        return render_template('teacher_add.html')
+            return render_template("teacher_add.html", msg=msg, lst_classes=lst_classes)
+            # return str(class_)
+        return render_template('teacher_add.html', lst_classes=lst_classes)
     except Exception as e:
         return str(e)
 
