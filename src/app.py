@@ -91,7 +91,7 @@ def add_students():
                 db.session.add(data_students)
                 db.session.commit()
 
-                query_5 = f"SELECT * FROM add_students"
+                query_5 = f"SELECT * FROM add_students ORDER BY studentid"
                 data = tuple(get_data_query(query_5))
 
                 msg = 'Success! Thank you for your information.'
@@ -121,7 +121,7 @@ def add_students():
                 return render_template('students.html', lst=lst, msg=msg)
 
             elif request.form['service'] == 'show':
-                query_4 = f"SELECT * FROM add_students"
+                query_4 = f"SELECT * FROM add_students ORDER BY studentid"
                 lst_data = get_data_query(query_4)
 
                 if len(lst_data) > 0:
@@ -202,7 +202,7 @@ def add_teachers():
                 db.session.add(data_teacher)
                 db.session.commit()
 
-                query_all = "SELECT * FROM add_teachers"
+                query_all = "SELECT * FROM add_teachers ORDER BY teacherid"
                 data_all = get_data_query(query_all)
 
                 msg = 'Successfully! Thank you for your information.'
@@ -232,7 +232,7 @@ def add_teachers():
                 return render_template('teacher_add.html', lst_classes=lst_classes, msg=msg)
 
             elif request.form['service'] == 'show_teachers':
-                query_3 = "SELECT * FROM add_teachers"
+                query_3 = "SELECT * FROM add_teachers ORDER BY teacherid"
                 lst_data_all = get_data_query(query_3)
                 data_all = tuple(lst_data_all)
                 msg = "Success!"
@@ -275,7 +275,7 @@ def edit_teacher():
                 db.session.execute(query_update)
                 db.session.commit()
 
-                flash('Updated', 'success')
+                # flash('Updated', 'success')
                 return redirect(url_for('add_teachers'))
             elif request.form['service'] == 'cancel':
                 # flash('Canceled edit!', 'danger')
