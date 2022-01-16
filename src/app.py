@@ -4,6 +4,7 @@ import os
 # import traceback
 
 from src.models import Students, Classes, Teachers, Subjects
+from src.processing import convert_list_to_string, get_data_query
 
 from dotenv import load_dotenv
 
@@ -66,14 +67,6 @@ def add_classes():
     except Exception as e:
         return str(e)
         # return traceback.print_exc()
-
-
-def get_data_query(query):
-    results = db.session.execute(query)
-    lst = []
-    for r in results:
-        lst.append(r)
-    return lst
 
 
 @app.route('/students', methods=['GET', 'POST'])
@@ -198,13 +191,14 @@ def add_teachers():
             if request.form['service'] == 'add_teacher':
                 teachername = request.form['teacher']
                 teachergender = request.form['teacher_gender']
-                class_ = request.form.getlist('teacher_classes')
+                classes = request.form.getlist('teacher_classes')
+                classes_ = convert_list_to_string(classes)
 
                 if teachername == '':
                     error = "Please enter required fields."
                     return render_template("teacher_add.html", lst_classes=lst_classes, error=error)
 
-                data_teacher = Teachers(teachername, teachergender, class_)
+                data_teacher = Teachers(teachername, teachergender, classes_)
                 db.session.add(data_teacher)
                 db.session.commit()
 
@@ -245,6 +239,47 @@ def add_teachers():
                 return render_template('teacher_add.html', data_all=data_all, msg=msg, lst_classes=lst_classes)
 
         return render_template('teacher_add.html', lst_classes=lst_classes)
+    except Exception as e:
+        return str(e)
+
+
+@app.route('/edit_teacher', methods=['GET', 'POST'])
+def edit_teacher():
+    try:
+        if request.method == 'POST':
+            teacher_id = request.form['edit_id']
+            if request.form['service'] == 'edit_teacher':
+                query_teacher = f"SELECT * FROM add_teachers WHERE teacherid={teacher_id}"
+                lst_teacher = get_data_query(query_teacher)
+                query_class = f"SELECT classname from add_classes"
+                lst_classes = get_data_query(query_class)
+                return render_template('edit_teacher.html', lst_teacher=lst_teacher[0], lst_classes=lst_classes)
+            elif request.form['service'] == 'edit_success':
+                teacher_name = request.form['teacher']
+                teacher_gender = request.form['teacher_gender']
+                classes = convert_list_to_string(request.form.getlist('teacher_classes'))
+
+                if teacher_name == "":
+                    query_teacher = f"SELECT * FROM add_teachers WHERE teacherid={teacher_id}"
+                    lst_teacher = get_data_query(query_teacher)
+                    query_class = f"SELECT classname from add_classes"
+                    lst_classes = get_data_query(query_class)
+                    error = "Please enter required fields."
+                    return render_template("edit_teacher.html", lst_teacher=lst_teacher[0],
+                                           lst_classes=lst_classes, error=error)
+
+                query_update = f"UPDATE add_teachers " \
+                               f"SET teachername='{teacher_name}', teachergender='{teacher_gender}'," \
+                               f"teacherclasses='{classes}'" \
+                               f"WHERE teacherid = {teacher_id}"
+                db.session.execute(query_update)
+                db.session.commit()
+
+                flash('Updated', 'success')
+                return redirect(url_for('add_teachers'))
+            elif request.form['service'] == 'cancel':
+                # flash('Canceled edit!', 'danger')
+                return redirect(url_for('add_teachers'))
     except Exception as e:
         return str(e)
 

@@ -1,0 +1,70 @@
+{% extends 'layout.html' %}
+{% block title %}FPT Software - Cổng thông tin lớp học - Sửa thông tin giáo viên{% endblock %}
+{% block body %}
+<body>
+  <div class="container" style="margin-top:10px">
+    {% if message %}
+    <p class="message">{{message | safe}}</p>
+    {% endif %}
+    <div class="row">
+      <div class="col-sm-12" style="background-color:gainsboro;">
+        <h3>Sửa thông tin giáo viên</h3><br><br>
+        <form action="/edit_teacher" method="POST">
+          <div class="form-group">
+            {% include 'includes/_selectpicker.html' %}
+            <label for="teacher">Tên giáo viên:</label><br>
+            <input
+                    type="text"
+                    class="form-control"
+                    name="teacher"
+                    id="teacher"
+                    placeholder="Tên giáo viên"
+                    value="{{ lst_teacher[1] }}"
+            ><br>
+
+            <label for="tgender">Giới tính:</label>
+            <select name="teacher_gender" id="tgender" class="form-control">
+              {% if lst_teacher[2] == "Nam" %}
+                <option value="Nam" selected>Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+              {% elif lst_teacher[2] == "Nữ" %}
+                <option value="Nam">Nam</option>
+                <option value="Nữ" selected>Nữ</option>
+                <option value="Khác">Khác</option>
+              {% else %}
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác" selected>Khác</option>
+              {% endif %}
+            </select><br>
+
+            <label>Lớp:</label><br>
+            <select name='teacher_classes' class="selectpicker form-control" multiple data-live-search="true">
+              {% for class in lst_classes %}
+              {% if class[0] in lst_teacher[3] %}
+              <option selected>{{ class[0] }}</option>
+              {% else %}
+              <option>{{ class[0] }}</option>
+              {% endif %}
+              {% endfor %}
+            </select><br><br>
+
+            <input type="submit" class="btn btn-primary" value=" Nộp ">
+            <input type="hidden" name="service" value="edit_success">
+            <input type="hidden" name="edit_id" value="{{ lst_teacher[0] }}">
+
+            <form action="/edit_teacher">
+              <input type="submit" class="btn btn-danger" value=" Hủy ">
+              <input type="hidden" name="service" value="cancel">
+            </form>
+
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</body>
+
+{% endblock %}
