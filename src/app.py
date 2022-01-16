@@ -4,11 +4,12 @@ import os
 # import traceback
 
 from src.models import Students, Classes, Teachers, Subjects
+from src.processing import convert_list_to_string, get_data_query
 
-# from dotenv import load_dotenv
-#
-#
-# load_dotenv()
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -68,14 +69,6 @@ def add_classes():
         # return traceback.print_exc()
 
 
-def get_data_query(query):
-    results = db.session.execute(query)
-    lst = []
-    for r in results:
-        lst.append(r)
-    return lst
-
-
 @app.route('/students', methods=['GET', 'POST'])
 def add_students():
     try:
@@ -98,7 +91,7 @@ def add_students():
                 db.session.add(data_students)
                 db.session.commit()
 
-                query_5 = f"SELECT * FROM add_students"
+                query_5 = f"SELECT * FROM add_students ORDER BY studentid"
                 data = tuple(get_data_query(query_5))
 
                 msg = 'Success! Thank you for your information.'
@@ -128,7 +121,7 @@ def add_students():
                 return render_template('students.html', lst=lst, msg=msg)
 
             elif request.form['service'] == 'show':
-                query_4 = f"SELECT * FROM add_students"
+                query_4 = f"SELECT * FROM add_students ORDER BY studentid"
                 lst_data = get_data_query(query_4)
 
                 if len(lst_data) > 0:
@@ -185,11 +178,6 @@ def edit_students():
         # return traceback.print_exc()
 
 
-@app.route('/students-info')
-def get_students():
-    return render_template('studentsinfo.html')
-
-
 @app.route('/teachers', methods=['GET', 'POST'])
 def add_teachers():
     try:
@@ -200,22 +188,98 @@ def add_teachers():
             lst_classes.append(r[0])
 
         if request.method == 'POST':
-            teachername = request.form['teacher']
-            teachergender = request.form['teacher_gender']
-            class_ = request.form.getlist('teacher_classes')
+            if request.form['service'] == 'add_teacher':
+                teachername = request.form['teacher']
+                teachergender = request.form['teacher_gender']
+                classes = request.form.getlist('teacher_classes')
+                classes_ = convert_list_to_string(classes)
 
-            if teachername == '':
-                error = "Please enter required fields."
-                return render_template("teacher_add.html", lst_classes=lst_classes, error=error)
+                if teachername == '':
+                    error = "Please enter required fields."
+                    return render_template("teacher_add.html", lst_classes=lst_classes, error=error)
 
-            data_teacher = Teachers(teachername, teachergender, class_)
-            db.session.add(data_teacher)
-            db.session.commit()
+                data_teacher = Teachers(teachername, teachergender, classes_)
+                db.session.add(data_teacher)
+                db.session.commit()
 
-            msg = 'Successfully! Thank you for your information.'
-            return render_template("teacher_add.html", msg=msg, lst_classes=lst_classes)
-            # return str(class_)
+                query_all = "SELECT * FROM add_teachers ORDER BY teacherid"
+                data_all = get_data_query(query_all)
+
+                msg = 'Successfully! Thank you for your information.'
+                return render_template("teacher_add.html", msg=msg, lst_classes=lst_classes, data_all=data_all)
+
+            elif request.form['service'] == 'search_teacher':
+                teacher_name = request.form['getteachername']
+                query_2 = f"SELECT * FROM add_teachers WHERE teachername='{teacher_name}'"
+                lst_data = get_data_query(query_2)
+                if len(lst_data) >= 1:
+                    headings = ('Teacher_ID', 'Full_Name', 'Gender', 'Classes_in_charge')
+                    data = tuple(lst_data)
+                    msg = "Success!"
+                    return render_template('teacher_add.html', lst_classes=lst_classes, headings=headings,
+                                            data=data, msg=msg)
+
+                else:
+                    error = 'Teacher not found! Please try again!'
+                    return render_template('teacher_add.html', lst_classes=lst_classes, error=error)
+
+            elif request.form['service'] == 'delete_teacher':
+                delete_tid = request.form['delete_tid']
+                query_delete = f"DELETE FROM add_teachers WHERE teacherid='{delete_tid}'"
+                db.session.execute(query_delete)
+                db.session.commit()
+                msg = f"Delete teacher with id = {delete_tid} successfully!"
+                return render_template('teacher_add.html', lst_classes=lst_classes, msg=msg)
+
+            elif request.form['service'] == 'show_teachers':
+                query_3 = "SELECT * FROM add_teachers ORDER BY teacherid"
+                lst_data_all = get_data_query(query_3)
+                data_all = tuple(lst_data_all)
+                msg = "Success!"
+                return render_template('teacher_add.html', data_all=data_all, msg=msg, lst_classes=lst_classes)
+
         return render_template('teacher_add.html', lst_classes=lst_classes)
+    except Exception as e:
+        return str(e)
+
+
+@app.route('/edit_teacher', methods=['GET', 'POST'])
+def edit_teacher():
+    try:
+        if request.method == 'POST':
+            teacher_id = request.form['edit_id']
+            if request.form['service'] == 'edit_teacher':
+                query_teacher = f"SELECT * FROM add_teachers WHERE teacherid={teacher_id}"
+                lst_teacher = get_data_query(query_teacher)
+                query_class = f"SELECT classname from add_classes"
+                lst_classes = get_data_query(query_class)
+                return render_template('edit_teacher.html', lst_teacher=lst_teacher[0], lst_classes=lst_classes)
+            elif request.form['service'] == 'edit_success':
+                teacher_name = request.form['teacher']
+                teacher_gender = request.form['teacher_gender']
+                classes = convert_list_to_string(request.form.getlist('teacher_classes'))
+
+                if teacher_name == "":
+                    query_teacher = f"SELECT * FROM add_teachers WHERE teacherid={teacher_id}"
+                    lst_teacher = get_data_query(query_teacher)
+                    query_class = f"SELECT classname from add_classes"
+                    lst_classes = get_data_query(query_class)
+                    error = "Please enter required fields."
+                    return render_template("edit_teacher.html", lst_teacher=lst_teacher[0],
+                                           lst_classes=lst_classes, error=error)
+
+                query_update = f"UPDATE add_teachers " \
+                               f"SET teachername='{teacher_name}', teachergender='{teacher_gender}'," \
+                               f"teacherclasses='{classes}'" \
+                               f"WHERE teacherid = {teacher_id}"
+                db.session.execute(query_update)
+                db.session.commit()
+
+                # flash('Updated', 'success')
+                return redirect(url_for('add_teachers'))
+            elif request.form['service'] == 'cancel':
+                # flash('Canceled edit!', 'danger')
+                return redirect(url_for('add_teachers'))
     except Exception as e:
         return str(e)
 
