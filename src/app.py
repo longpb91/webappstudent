@@ -187,18 +187,25 @@ def add_teachers():
         for r in results:
             lst_classes.append(r[0])
 
+        query_subject = 'SELECT subjectname FROM add_subjects ORDER BY subjectname'
+        subject_results = db.session.execute(query_subject)
+        lst_subjects = []
+        for r in subject_results:
+            lst_subjects.append(r[0])
+
         if request.method == 'POST':
             if request.form['service'] == 'add_teacher':
                 teachername = request.form['teacher']
                 teachergender = request.form['teacher_gender']
-                classes = request.form.getlist('teacher_classes')
-                classes_ = convert_list_to_string(classes)
+                classes = convert_list_to_string(request.form.getlist('teacher_classes'))
+                subject = request.form['teach_subject']
 
                 if teachername == '':
                     error = "Please enter required fields."
-                    return render_template("teacher_add.html", lst_classes=lst_classes, error=error)
+                    return render_template("teacher_add.html", lst_classes=lst_classes, lst_subjects=lst_subjects,
+                                           error=error)
 
-                data_teacher = Teachers(teachername, teachergender, classes_)
+                data_teacher = Teachers(teachername, teachergender, classes, subject)
                 db.session.add(data_teacher)
                 db.session.commit()
 
@@ -206,22 +213,24 @@ def add_teachers():
                 data_all = get_data_query(query_all)
 
                 msg = 'Successfully! Thank you for your information.'
-                return render_template("teacher_add.html", msg=msg, lst_classes=lst_classes, data_all=data_all)
+                return render_template("teacher_add.html", msg=msg, lst_classes=lst_classes, lst_subjects=lst_subjects,
+                                       data_all=data_all)
 
             elif request.form['service'] == 'search_teacher':
                 teacher_name = request.form['getteachername']
                 query_2 = f"SELECT * FROM add_teachers WHERE teachername='{teacher_name}'"
                 lst_data = get_data_query(query_2)
                 if len(lst_data) >= 1:
-                    headings = ('Teacher_ID', 'Full_Name', 'Gender', 'Classes_in_charge')
+                    headings = ('Teacher_ID', 'Full_Name', 'Gender', 'Classes_in_charge', 'Subject')
                     data = tuple(lst_data)
                     msg = "Success!"
-                    return render_template('teacher_add.html', lst_classes=lst_classes, headings=headings,
-                                            data=data, msg=msg)
+                    return render_template('teacher_add.html', lst_classes=lst_classes, lst_subjects=lst_subjects,
+                                           headings=headings, data=data, msg=msg)
 
                 else:
                     error = 'Teacher not found! Please try again!'
-                    return render_template('teacher_add.html', lst_classes=lst_classes, error=error)
+                    return render_template('teacher_add.html', lst_classes=lst_classes, lst_subjects=lst_subjects,
+                                           error=error)
 
             elif request.form['service'] == 'delete_teacher':
                 delete_tid = request.form['delete_tid']
@@ -229,16 +238,17 @@ def add_teachers():
                 db.session.execute(query_delete)
                 db.session.commit()
                 msg = f"Delete teacher with id = {delete_tid} successfully!"
-                return render_template('teacher_add.html', lst_classes=lst_classes, msg=msg)
+                return render_template('teacher_add.html', lst_classes=lst_classes, lst_subjects=lst_subjects, msg=msg)
 
             elif request.form['service'] == 'show_teachers':
                 query_3 = "SELECT * FROM add_teachers ORDER BY teacherid"
                 lst_data_all = get_data_query(query_3)
                 data_all = tuple(lst_data_all)
                 msg = "Success!"
-                return render_template('teacher_add.html', data_all=data_all, msg=msg, lst_classes=lst_classes)
+                return render_template('teacher_add.html', data_all=data_all, msg=msg, lst_classes=lst_classes,
+                                       lst_subjects=lst_subjects)
 
-        return render_template('teacher_add.html', lst_classes=lst_classes)
+        return render_template('teacher_add.html', lst_classes=lst_classes, lst_subjects=lst_subjects)
     except Exception as e:
         return str(e)
 
@@ -253,24 +263,30 @@ def edit_teacher():
                 lst_teacher = get_data_query(query_teacher)
                 query_class = f"SELECT classname from add_classes"
                 lst_classes = get_data_query(query_class)
-                return render_template('edit_teacher.html', lst_teacher=lst_teacher[0], lst_classes=lst_classes)
+                query_subject = f"SELECT subjectname from add_subjects"
+                lst_subjects = get_data_query(query_subject)
+                return render_template('edit_teacher.html', lst_teacher=lst_teacher[0], lst_classes=lst_classes,
+                                       lst_subjects=lst_subjects)
             elif request.form['service'] == 'edit_success':
                 teacher_name = request.form['teacher']
                 teacher_gender = request.form['teacher_gender']
                 classes = convert_list_to_string(request.form.getlist('teacher_classes'))
+                teach_subject = request.form['teach_subject']
 
                 if teacher_name == "":
                     query_teacher = f"SELECT * FROM add_teachers WHERE teacherid={teacher_id}"
                     lst_teacher = get_data_query(query_teacher)
                     query_class = f"SELECT classname from add_classes"
                     lst_classes = get_data_query(query_class)
+                    query_subject = f"SELECT subjectname from add_subjects"
+                    lst_subjects = get_data_query(query_subject)
                     error = "Please enter required fields."
                     return render_template("edit_teacher.html", lst_teacher=lst_teacher[0],
-                                           lst_classes=lst_classes, error=error)
+                                           lst_classes=lst_classes, lst_subjects=lst_subjects, error=error)
 
                 query_update = f"UPDATE add_teachers " \
                                f"SET teachername='{teacher_name}', teachergender='{teacher_gender}'," \
-                               f"teacherclasses='{classes}'" \
+                               f"teacherclasses='{classes}', teachsubject='{teach_subject}'" \
                                f"WHERE teacherid = {teacher_id}"
                 db.session.execute(query_update)
                 db.session.commit()
@@ -288,20 +304,44 @@ def edit_teacher():
 def add_subjects():
     try:
         if request.method == 'POST':
-            subject_id = request.form['subjectid']
-            subject_name = request.form['subjectname']
+            if request.form['service'] == 'add_subject':
+                subject_id = request.form['subjectid']
+                subject_name = request.form['subjectname']
 
-            if subject_id == '' or subject_name == '':
-                error = "Please enter required fields."
-                return render_template("subject_add.html", error=error)
-            if db.session.query(Subjects).filter(Subjects.subjectid == subject_id).count() == 0:
-                data_subject = Subjects(subject_id, subject_name)
-                db.session.add(data_subject)
+                if subject_id == '' or subject_name == '':
+                    error = "Please enter required fields."
+                    return render_template("subject_add.html", error=error)
+                if db.session.query(Subjects).filter(Subjects.subjectid == subject_id).count() == 0:
+                    data_subject = Subjects(subject_id, subject_name)
+                    db.session.add(data_subject)
+                    db.session.commit()
+                    msg = 'Successfully! Thank you for your information.'
+                    return render_template('subject_add.html', msg=msg)
+                error = 'You have already submitted.'
+                return render_template('subject_add.html', error=error)
+            elif request.form['service'] == 'search_subject':
+                subject_name = request.form['get_subject']
+                query_search = f"SELECT * FROM add_subjects WHERE subjectname='{subject_name}'"
+                data = tuple(get_data_query(query_search))
+                if len(data) >= 1:
+                    headings = ('SubjectID', 'SubjectName')
+                    msg = "Success! Thanh you for your information."
+                    return render_template('subject_add.html', msg=msg, headings=headings, data=data)
+                else:
+                    error = 'Subject not found! Please try again!'
+                    return render_template('subject_add.html', error=error)
+            elif request.form['service'] == 'show_subjects':
+                query_show = "SELECT * FROM add_subjects ORDER BY subjectname"
+                data_all = get_data_query(query_show)
+                msg = 'Success!'
+                return render_template('subject_add.html', msg=msg, data_all=data_all)
+            elif request.form['service'] == 'delete_subject':
+                delete_name = request.form['delete_name']
+                query_delete = f"DELETE FROM add_subjects WHERE subjectname='{delete_name}'"
+                db.session.execute(query_delete)
                 db.session.commit()
-                msg = 'Successfully! Thank you for your information.'
+                msg = f"Delete subject {delete_name} successfully!"
                 return render_template('subject_add.html', msg=msg)
-            error = 'You have already submitted.'
-            return render_template('subject_add.html', error=error)
         return render_template('subject_add.html')
     except Exception as e:
         return str(e)

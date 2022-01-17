@@ -27,6 +27,13 @@
               <option name="class_" value="{{ class }}">{{ class }}</option>
               {% endfor %}
             </select><br><br>
+            <label> Môn giảng dạy:</label><br>
+              <select name="teach_subject" class="form-control">
+                  <option value="" selected>Chọn...</option>
+                  {% for subject in lst_subjects %}
+                  <option name="subject" value="{{ subject }}">{{ subject }}</option>
+                  {% endfor %}
+              </select><br><br>
 
             <input type="submit" class="btn btn-primary" value=" Nộp ">
             <input type="hidden" name="service" value="add_teacher">
@@ -95,6 +102,7 @@
                       <th>Full Name</th>
                       <th>Gender</th>
                       <th>Class in charge</th>
+                      <th>Subject</th>
                   </tr>
 
                   {% for row in data_all %}
