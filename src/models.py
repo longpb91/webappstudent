@@ -35,11 +35,13 @@ class Teachers(db.Model):
     teachername = db.Column(db.String(200))
     teachergender = db.Column(db.String(10))
     teacherclasses = db.Column(db.String(1000))
+    teachsubject = db.Column(db.String(200))
 
-    def __init__(self, teachername, teachergender, teacherclasses):
+    def __init__(self, teachername, teachergender, teacherclasses, teachsubject):
         self.teachername = teachername
         self.teachergender = teachergender
         self.teacherclasses = teacherclasses
+        self.teachsubject = teachsubject
 
 
 class Subjects(db.Model):

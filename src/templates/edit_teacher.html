@@ -50,6 +50,18 @@
               {% endfor %}
             </select><br><br>
 
+            <label> Môn giảng dạy:</label><br>
+              <select name="teach_subject" class="form-control">
+                  <option value="" selected>Chọn...</option>
+                  {% for subject in lst_subjects %}
+                  {% if lst_teacher[4] in lst_subjects %}
+                  <option name="subject" value="{{ subject[0] }}" selected>{{ subject[0] }}</option>
+                  {% else %}
+                  <option name="subject" value="{{ subject[0] }}">{{ subject[0] }}</option>
+                  {% endif %}
+                  {% endfor %}
+              </select><br><br>
+
             <input type="submit" class="btn btn-primary" value=" Nộp ">
             <input type="hidden" name="service" value="edit_success">
             <input type="hidden" name="edit_id" value="{{ lst_teacher[0] }}">
