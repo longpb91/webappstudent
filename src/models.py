@@ -53,3 +53,7 @@ class Subjects(db.Model):
         self.subjectid = subjectid
         self.subjectname = subjectname
 
+db.create_all()
+db.session.commit()
+
+

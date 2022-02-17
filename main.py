@@ -5,8 +5,7 @@ import os
 #
 # load_dotenv()
 
-
 if __name__ == "__main__":
     app.secret_key = os.environ.get('SECRET_KEY')
-    app.run()
+    app.run(host="0.0.0.0", port="5000")
 
