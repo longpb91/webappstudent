@@ -6,10 +6,10 @@ import os
 # from src.models import Students, Classes, Teachers, Subjects
 # from src.processing import convert_list_to_string, get_data_query
 
-from dotenv import load_dotenv
-
-
-load_dotenv()
+# from dotenv import load_dotenv
+#
+#
+# load_dotenv()
 
 app = Flask(__name__)
 
