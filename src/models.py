@@ -1,9 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-from src.app import app
-
-app_model = app
-
-db = SQLAlchemy(app_model)
+from .app import db
 
 
 class Students(db.Model):

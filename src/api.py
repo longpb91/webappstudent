@@ -1,15 +1,11 @@
-from src.app import app
-from flask import render_template, request, flash, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
+from .app import app, db
+from flask import Flask, render_template, request, flash, redirect, url_for
+
 
 # import traceback
 
 from .models import Students, Classes, Teachers, Subjects
-from src.processing import convert_list_to_string, get_data_query
-
-app_api = app
-
-db = SQLAlchemy(app_api)
+from .processing import convert_list_to_string, get_data_query
 
 
 @app.route('/')
