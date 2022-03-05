@@ -3,7 +3,11 @@
 
 name: Python application CI with Docker
 
-on: [push, pull_request]
+on: 
+    push:
+    pull_request:
+        types: [opened, synchronize]
+        
 #   push:
 #     branches: [ dev_main, longpb_dev ]
 #   pull_request:
