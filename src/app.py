@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask
 # from flask_sqlalchemy import SQLAlchemy
 import os
 # import traceback
@@ -6,10 +6,6 @@ import os
 
 # from src.models import Students, Classes, Teachers, Subjects
 # from src.processing import convert_list_to_string, get_data_query
-
-# from .models import Students, Classes, Teachers, Subjects
-# from .processing import convert_list_to_string, get_data_query
-
 
 # from dotenv import load_dotenv
 #
@@ -26,9 +22,11 @@ if ENV == 'dev':
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL_DEV')
 else:
     app.debug = True
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL_PROD')
+    # app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL_PROD')
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL_PROD')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+# app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['SESSION_TYPE'] = 'filesystem'
 
 
@@ -369,4 +367,3 @@ app.config['SESSION_TYPE'] = 'filesystem'
 #     # app.debug = True
 #     # app.secret_key = os.environ.get('SECRET_KEY')
 #     app.run()
-

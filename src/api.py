@@ -1,10 +1,10 @@
 from src.app import app
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import render_template, request, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 # import traceback
 
-from src.models import Students, Classes, Teachers, Subjects
+from .models import Students, Classes, Teachers, Subjects
 from src.processing import convert_list_to_string, get_data_query
 
 app_api = app

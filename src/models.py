@@ -1,4 +1,3 @@
-# from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from src.app import app
 
@@ -54,7 +53,7 @@ class Subjects(db.Model):
         self.subjectid = subjectid
         self.subjectname = subjectname
 
-db.create_all()
-db.session.commit()
+# db.create_all()
+# db.session.commit()
 
 
