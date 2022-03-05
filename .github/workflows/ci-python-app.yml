@@ -1,0 +1,44 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python application CI with Docker
+
+on: 
+    push:
+    pull_request:
+        types: [opened, synchronize]
+        
+#   push:
+#     branches: [ dev_main, longpb_dev ]
+#   pull_request:
+#     branches: [ dev_main, longpb_dev ]
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: docker login
+      env:
+        DOCKER_USER: ${{ secrets.DOCKER_USERNAME }}   
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}  
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - name: docker build webapp
+      run: |
+        docker build ./ -t huylq1999/webappstudent
+    
+    - name: docker push
+      run: |
+        docker push huylq1999/webappstudent
+    
+                
+    
+        
+        
+#       uses: mr-smithers-excellent/docker-build-push@v4
+#       with:
+#         image: huylq1999/webappstudent # change to your DockerHub
+#         registry: docker.io
+#         username: ${{ secrets.DOCKER_USERNAME }} # set secret in git setting
+#         password: ${{ secrets.DOCKER_PASSWORD }}
