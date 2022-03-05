@@ -1,0 +1,35 @@
+name: LongPB Docker Image CI
+
+on:
+#   push:
+#     branches: [ dev_main, longpb_dev ]
+  pull_request:
+    types: [ closed ]
+
+jobs:
+  merge_job:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and Push Docker Image
+        uses: mr-smithers-excellent/docker-build-push@v4
+        with:
+          image: huylq1999/webappstudent # change to your DockerHub
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }} # set secret in git setting
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+  close_job:
+    if: github.event.pull_request.merged = false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and Push Docker Image
+        uses: mr-smithers-excellent/docker-build-push@v4
+        with:
+          image: huylq1999/webappstudent # change to your DockerHub
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }} # set secret in git setting
+          password: ${{ secrets.DOCKER_PASSWORD }}
+ 
