@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+{% block title %}FPT Software - Cổng thông tin lớp học - Sửa thông tin Học sinh{% endblock %}
+
+{% block body %}
+<div class="row">
+          <div class="col-sm-12" style="background-color:gainsboro;">
+              <h3>Sửa thông tin học sinh</h3><br><br>
+              <form action="/edit_students" method="POST">
+                  <div class="form-group">
+                      <label for="sname">Tên học sinh:</label><br>
+                      <input
+                          type="text"
+                          class="form-control"
+                          name="studentname"
+                          id="sname"
+                          placeholder="Tên đầy đủ"
+                          value="{{ lst_student[1] }}"
+                      />
+                      <br>
+                  </div>
+
+                  <div class="form-group">
+                      <label for="sgender">Giới tính:</label><br>
+                      <select name="studentgender" class="form-control" id="sgender">
+                          {% if lst_student[2] == "Nam" %}
+                            <option value="Nam" selected='selected'>Nam</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Khác">Khác</option>
+                          {% else %}
+                            <option value="Nữ" selected='selected'>Nữ</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Khác">Khác</option>
+                          {% endif %}
+                      </select>
+                      <br>
+                  </div>
+
+                  <div class="form-group">
+                      <label for="classes">Chọn lớp:</label><br>
+                      <select name="classes" class="form-control" id="classes">
+<!--                          <option value=" " selected>Chọn...</option>-->
+                          {% for class in lst_class %}
+                              {% if lst_student[3] == class[0] %}
+                                <option value="{{ class[0] }}" selected>{{ class[0] }}</option>
+                              {% else %}
+                                <option value="{{ class[0] }}">{{ class[0] }}</option>
+                              {% endif %}
+                          {% endfor %}
+                      </select>
+                      <br><br>
+                  </div>
+                  <input type="submit" name="submit_button" class="btn btn-primary" value=" Nộp ">
+                  <input type="hidden" name="service" value="editsuccess">
+                  <input type="hidden" name="editid" value="{{ lst_student[0] }}">
+
+              </form>
+          </div>
+{% endblock %}
+</div>

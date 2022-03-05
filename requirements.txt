@@ -13,3 +13,4 @@ SQLAlchemy==1.4.29
 typing_extensions==4.0.1
 Werkzeug==2.0.2
 zipp==3.7.0
+python-dotenv
