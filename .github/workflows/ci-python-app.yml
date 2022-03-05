@@ -9,23 +9,25 @@ on: [push, pull_request]
 #   pull_request:
 #     branches: [ dev_main, longpb_dev ]
     
-
-jobs:  
-
+jobs:
   build:
-
     runs-on: ubuntu-latest
-    env:
-        username: ${{ secrets.DOCKER_USERNAME }} # set secret in git setting
-        password: ${{ secrets.DOCKER_PASSWORD }}
     steps:
-        - uses: actions/checkout@v2
-        - name: Docker Login
-            run:docker login -u $username -p $password
-        - name: Build Docker
-            run:docker build ./ -t huylq1999/webappstudent
-        - name: Push Docker
-            docker push
+    - uses: actions/checkout@v2
+    - name: docker login
+      env:
+        DOCKER_USER: ${{ secrets.DOCKER_USER }}   
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}  
+      run: |
+        docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+    - name: docker build webapp
+      run: |
+        docker build ./ -t huylq1999/webappstudent
+    
+    - name: docker push
+      run: |
+        docker push huylq1999/webappstudent
+    
                 
     
         
