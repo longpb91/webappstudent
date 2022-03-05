@@ -5,8 +5,8 @@ import os
 #
 # load_dotenv()
 
-
 if __name__ == "__main__":
     app_api.secret_key = os.environ.get('SECRET_KEY')
     app_api.run()
+
 

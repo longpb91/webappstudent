@@ -3,8 +3,13 @@ from flask import Flask, render_template, request, flash, redirect, url_for
 import os
 # import traceback
 
+
 # from src.models import Students, Classes, Teachers, Subjects
 # from src.processing import convert_list_to_string, get_data_query
+
+# from .models import Students, Classes, Teachers, Subjects
+# from .processing import convert_list_to_string, get_data_query
+
 
 # from dotenv import load_dotenv
 #
@@ -364,3 +369,4 @@ app.config['SESSION_TYPE'] = 'filesystem'
 #     # app.debug = True
 #     # app.secret_key = os.environ.get('SECRET_KEY')
 #     app.run()
+
