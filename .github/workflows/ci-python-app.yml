@@ -17,11 +17,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Build and Push Docker Image
-      uses: mr-smithers-excellent/docker-build-push@v4
-      with:
-        image: huylq1999/webappstudent # change to your DockerHub
-        registry: docker.io
-        username: ${{ secrets.DOCKER_USERNAME }} # set secret in git setting
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        - uses: actions/checkout@v2
+        - name: Docker Login
+            env:
+                username: ${{ secrets.DOCKER_USERNAME }} # set secret in git setting
+                password: ${{ secrets.DOCKER_PASSWORD }}
+            run: |
+                docker login -u $username -p $password
+        - name: Build Docker
+            run: |
+                docker build ./ -t huylq1999/webappstudent
+        - name: Push Docker
+            docker push
+                
+    
+        
+        
+#       uses: mr-smithers-excellent/docker-build-push@v4
+#       with:
+#         image: huylq1999/webappstudent # change to your DockerHub
+#         registry: docker.io
+#         username: ${{ secrets.DOCKER_USERNAME }} # set secret in git setting
+#         password: ${{ secrets.DOCKER_PASSWORD }}
