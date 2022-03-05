@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request
+# from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+from src.app import app
 
-app = Flask(__name__)
+app_model = app
 
-db = SQLAlchemy(app)
+db = SQLAlchemy(app_model)
 
 
 class Students(db.Model):
