@@ -5,9 +5,9 @@ name: Python application CI with Docker
 
 on:
   push:
-    branches: [ dev_main ]
+    branches: [ dev_main, longpb_dev ]
   pull_request:
-    branches: [ dev_main ]
+    branches: [ dev_main, longpb_dev ]
     
 
 jobs:  
