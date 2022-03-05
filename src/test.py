@@ -1,6 +1,6 @@
-from src.app import db, app
-from src.models import Students, Classes
-import psycopg2
+# from src.app import db, app
+# from src.models import Students, Classes
+# import psycopg2
 
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # class_id = "cbide03".upper()
@@ -36,9 +36,9 @@ import psycopg2
 # x = tuple(lst)
 # print(x[0][0])
 
-name = "'Nguyễn Minh Quang'"
-query = f"SELECT * FROM add_teachers WHERE teachername={name}"
-result = db.session.execute(query)
-for r in result:
-    print(r)
-# print(result)
+# name = "'Nguyễn Minh Quang'"
+# query = f"SELECT * FROM add_teachers WHERE teachername={name}"
+# result = db.session.execute(query)
+# for r in result:
+#     print(r)
+# # print(result)
